@@ -124,7 +124,7 @@
       .dashboard-header {
         background: white;
         padding: 28px 0;
-        margin-bottom: 32px;
+        /* margin-bottom: 32px; */
         box-shadow: var(--shadow-sm);
         border-bottom: 1px solid var(--gray-200);
         position: relative;
@@ -263,7 +263,7 @@
         display: flex;
         justify-content: center;
         gap: 10px;
-        padding: 20px;
+        padding: 15px;
         background: var(--gray-50);
         border-bottom: 1px solid var(--gray-200);
       }
@@ -295,10 +295,11 @@
         background: white;
         border-radius: 0;
         overflow: hidden;
+        
       }
 
       .card-header-custom {
-        padding: 20px 24px;
+        /* padding: 20px 24px; */
         font-size: 1.25rem;
         font-weight: 700;
         background: linear-gradient(
@@ -438,7 +439,7 @@
         font-weight: 700;
         border-top: 2px solid black;
         border: 1px solid black;
-        padding: 16px 12px;
+        /* padding: 16px 12px; */
       }
 
       /* ================= LOADING ================= */
@@ -533,22 +534,19 @@
       .batch-selection-container {
         background: var(--gray-50);
         border-radius: var(--radius-sm);
-        padding: 16px;
-        margin-bottom: 20px;
         border: 1px solid var(--gray-200);
+        justify-items: center;
+        
       }
       .batch-selection-title {
         font-weight: 600;
         color: var(--gray-700);
-        margin-bottom: 10px;
         font-size: 16px;
       }
       .batch-selection-form {
-        display: flex;
-        gap: 12px;
-        align-items: center;
-        flex-wrap: wrap;
-        padding-bottom: 10px;
+       background: var(--gray-50);
+        border-radius: var(--radius-sm);
+        padding: 16px;
       }
       .batch-select {
         flex: 1;
@@ -671,7 +669,7 @@
 
           <!-- Desktop Logo -->
           <a class="navbar-brand d-none d-md-block text-center" href="#">
-            <img src="image/logo.png" alt="Logo" class="img-fluid" style="max-width:30%;">
+            <img src="image/logo.png" alt="Logo" class="img-fluid" style="max-width:20%;">
           </a>
         </div>
       </nav>
@@ -755,7 +753,6 @@
                     <div class="batch-selection-container">
                       <div class="row">
                         <div class="col-12 col-md-12 col-lg-12">
-                          <div class="batch-selection-title">Batch Selection for Lead Performance</div>
                           <div class="batch-selection-form">
                             <select id="summaryBatchSelect" class="select-modern batch-select" onchange="renderSummary()">
                               <option value="0">8 March</option>
@@ -792,7 +789,6 @@
                   </div>
                   <div class="card-body-custom">
                     <div class="batch-selection-container">
-                      <div class="batch-selection-title">Select Month to Highlight</div>
                       <div class="batch-selection-form">
                         <select id="monthlyMonthSelect" class="select-modern batch-select" onchange="renderMonthly()">
                           <option value="0">January</option>
