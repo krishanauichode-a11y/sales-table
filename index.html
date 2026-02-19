@@ -347,8 +347,8 @@
 .table-modern thead th {
   background: #f8fafc;
   color: #000000;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 30px;
+  font-weight: 700;
   text-transform: uppercase;
   padding: 12px 8px;
   border: 1px solid black; /* Enhanced header borders */
@@ -362,8 +362,8 @@
 
 .table-modern td {
   padding: 12px 8px;
-  font-size: 22px;
-  font-weight: 500;
+  font-size: 30px;
+  font-weight: 700;
   text-align: center;
   border: 1px solid black; /* Enhanced cell borders */
   transition: var(--transition-fast);
@@ -398,26 +398,26 @@
   min-width: 150px;
 }
 
-/* ================= NON-EDITABLE CELLS ================= */
-.view-only-cell {
+/* ================= READ-ONLY CELLS ================= */
+.read-only-cell {
   transition: var(--transition-fast);
-  border: 1px solid black; /* Enhanced view-only cell border */
+  border: 1px solid black; /* Enhanced cell border */
 }
 
-.view-only-cell:hover {
+.read-only-cell:hover {
   background: #f1f5f9;
   color: #1e293b;
   border-color: black; /* Darker border on hover */
 }
 
-/* ================= NON-EDITABLE HEADERS ================= */
-.view-only-header {
+/* ================= READ-ONLY HEADERS ================= */
+.read-only-header {
   transition: var(--transition-fast);
   background: #f8fafc;
-  border: 1px solid black; /* Enhanced view-only header border */
+  border: 1px solid black; /* Enhanced header border */
 }
 
-.view-only-header:hover {
+.read-only-header:hover {
   background: #f1f5f9;
   color: #475569;
   border-color:  black; /* Darker border on hover */
@@ -496,6 +496,9 @@
       }
       .notification-warning {
         background: linear-gradient(135deg, var(--warning), #92400e);
+      }
+      .notification-info {
+        background: linear-gradient(135deg, var(--info), #0c4a6e);
       }
 
       @keyframes slideIn {
@@ -722,6 +725,155 @@
       .info-card-content {
         color: #64748b;
       }
+
+      /* ================= AUTO REFRESH ================= */
+      .auto-refresh-container {
+        bottom: 20px;
+        right: 20px;
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: 16px;
+        box-shadow: var(--shadow-lg);
+        z-index: 1000;
+        min-width: 280px;
+        border: 1px solid var(--gray-200);
+      }
+
+      .auto-refresh-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+
+      .auto-refresh-title {
+        font-weight: 600;
+        color: var(--gray-700);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .auto-refresh-status {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+      }
+
+      .status-indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: var(--gray-400);
+      }
+
+      .status-indicator.active {
+        background-color: var(--success);
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+      }
+
+      .auto-refresh-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .refresh-interval-select {
+        flex: 1;
+        padding: 8px 12px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--gray-300);
+        font-size: 14px;
+      }
+
+      .refresh-toggle-btn {
+        padding: 8px 12px;
+        border-radius: var(--radius-sm);
+        border: none;
+        background: var(--primary);
+        color: white;
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .refresh-toggle-btn:hover {
+        background: var(--primary-dark);
+      }
+
+      .refresh-toggle-btn.active {
+        background: var(--success);
+      }
+
+      .refresh-toggle-btn.active:hover {
+        background: #047857;
+      }
+
+      .last-refresh-time {
+        font-size: 12px;
+        color: var(--gray-500);
+        margin-top: 8px;
+        text-align: center;
+      }
+
+      .refresh-progress {
+        height: 4px;
+        background-color: var(--gray-200);
+        border-radius: 2px;
+        margin-top: 8px;
+        overflow: hidden;
+      }
+
+      .refresh-progress-bar {
+        height: 100%;
+        background-color: var(--primary);
+        width: 0%;
+        transition: width 1s linear;
+      }
+
+      .refresh-progress-bar.active {
+        animation: progress-countdown linear;
+      }
+
+      /* Subtle refresh indicator */
+      .refresh-indicator {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+      }
+
+      .refresh-indicator.show {
+        opacity: 0.7;
+      }
+
+      .refresh-indicator i {
+        color: var(--primary);
+        font-size: 18px;
+        animation: spin 1s linear infinite;
+      }
+
+      /* Data update animation */
+      @keyframes data-update {
+        0% { background-color: rgba(30, 58, 138, 0.1); }
+        100% { background-color: transparent; }
+      }
+
+      .data-updating {
+        animation: data-update 0.5s ease;
+      }
     </style>
   </head>
   <body>
@@ -756,6 +908,9 @@
       
       <div class="container-fluid">
         <div class="carousel-container">
+          <div id="refreshIndicator" class="refresh-indicator">
+            <i class="bi bi-arrow-clockwise"></i>
+          </div>
           <div
             id="salesCarousel"
             class="carousel slide"
@@ -845,9 +1000,6 @@
                               <option value="1">6 April</option>
                               <option value="2">10 May</option>
                             </select>
-                            <button class="btn-modern btn-primary-modern batch-btn" onclick="applyBatchSelection()">
-                              <i class="bi bi-calendar-check"></i> Apply Batch
-                            </button>
                           </div>
                         </div>
                       </div>
@@ -996,6 +1148,43 @@
       </div>
     </div>
 
+    <!-- Auto Refresh Control Panel -->
+    <div class="auto-refresh-container">
+      <div class="auto-refresh-header">
+        <div class="auto-refresh-title">
+          <i class="bi bi-arrow-clockwise"></i>
+          <span>Auto Refresh</span>
+        </div>
+        <div class="auto-refresh-status">
+          <div class="status-indicator" id="refreshStatusIndicator"></div>
+          <span id="refreshStatusText">Disabled</span>
+        </div>
+      </div>
+      
+      <div class="auto-refresh-controls">
+        <select id="refreshInterval" class="refresh-interval-select">
+          <option value="30">30 seconds</option>
+          <option value="60" selected>1 minute</option>
+          <option value="300">5 minutes</option>
+          <option value="600">10 minutes</option>
+          <option value="1800">30 minutes</option>
+        </select>
+        
+        <button id="refreshToggle" class="refresh-toggle-btn">
+          <i class="bi bi-play-circle"></i>
+          <span>Start</span>
+        </button>
+      </div>
+      
+      <div class="refresh-progress">
+        <div class="refresh-progress-bar" id="refreshProgressBar"></div>
+      </div>
+      
+      <div class="last-refresh-time" id="lastRefreshTime">
+        Last refreshed: Never
+      </div>
+    </div>
+
   <script>
       /* ================= SALES DASHBOARD ================= */
       const API_URL = "https://tables-h7u9.onrender.com/api";
@@ -1006,7 +1195,7 @@
       let webinarData = {}; // Will be structured as {year: {batchName: count}}
       let customHeaders = {
         daily: [], 
-        summary: ["Team Member", "Fresher", "Offer", "Repeater", "Family","TOTAL", "Attended", "Postponed"], 
+        summary: ["Team Member", "Fresher", "Offer", "Repeater", "Family", "Basic", "Advance", "TOTAL", "Attended", "Postponed"], 
         monthly: ["Team Member"], 
         batch: ["Team Member"], 
         batchTable: ["Team Member"],
@@ -1031,20 +1220,51 @@
         // Add more batches here as needed with year information
       ];
 
-      function showLoading() { document.getElementById("loadingOverlay").style.display = "flex"; }
-      function hideLoading() { document.getElementById("loadingOverlay").style.display = "none"; }
+      // Auto Refresh Variables
+      let autoRefreshTimer = null;
+      let autoRefreshInterval = 60000; // Default: 1 minute (60000ms)
+      let isAutoRefreshEnabled = false;
+      let lastRefreshTime = null;
+      let refreshProgressTimer = null;
+
+      function showLoading(show = true) { 
+        if (show) {
+          document.getElementById("loadingOverlay").style.display = "flex";
+        } else {
+          document.getElementById("loadingOverlay").style.display = "none";
+        }
+      }
+      
       function showNotification(message, type = "success") {
         const notification = document.createElement("div");
         notification.className = `notification notification-${type} fade-in`;
-        notification.innerHTML = `<i class="bi bi-${type === "success" ? "check-circle" : type === "error" ? "x-circle" : "info-circle"}"></i><span>${message}</span>`;
+        notification.innerHTML = `<i class="bi bi-${type === "success" ? "check-circle" : type === "error" ? "x-circle" : type === "warning" ? "exclamation-triangle" : "info-circle"}"></i><span>${message}</span>`;
         document.body.appendChild(notification);
         setTimeout(() => { notification.style.animation = "slideIn 0.3s ease-out reverse"; setTimeout(() => notification.remove(), 300); }, 3000);
       }
 
       // --- CORE DATA FUNCTIONS ---
-      async function fetchData() {
+      async function fetchData(showLoadingOverlay = true) {
         try {
-          showLoading();
+          // Show loading only for initial load or when explicitly requested
+          if (showLoadingOverlay) {
+            showLoading(true);
+          }
+          
+          // Show subtle refresh indicator for auto-refresh
+          if (!showLoadingOverlay) {
+            const indicator = document.getElementById("refreshIndicator");
+            if (indicator) {
+              indicator.classList.add("show");
+            }
+            
+            // Add data-updating class to tables for subtle animation
+            const tables = document.querySelectorAll('.table-modern');
+            tables.forEach(table => {
+              table.classList.add('data-updating');
+            });
+          }
+          
           const response = await fetch(`${API_URL}/sales`);
           if (!response.ok) throw new Error("Network response was not ok");
           const data = await response.json();
@@ -1121,7 +1341,7 @@
             }
             for(let i = 0; i < batchToMonthMapping.length; i++) {
               if (!salesData.leadSummary[emp][i]) {
-                salesData.leadSummary[emp][i] = { pre: 0, off: 0, rep: 0, app: 0, att: 0 };
+                salesData.leadSummary[emp][i] = { pre: 0, off: 0, rep: 0, app: 0, bas: 0, adv: 0, att: 0 };
               }
             }
           });
@@ -1129,15 +1349,162 @@
           renderAll();
           renderWebinarCharts();
           updateBatchDropdown();
+          
+          // Update last refresh time
+          updateLastRefreshTime();
+          
+          // If auto-refresh is enabled, restart the timer
+          if (isAutoRefreshEnabled) {
+            startAutoRefresh();
+          }
+          
+          // Show notification for successful refresh only for manual refresh or first load
+          if (showLoadingOverlay || !lastRefreshTime) {
+            showNotification("Dashboard data refreshed successfully", "success");
+          }
         } catch (error) {
           console.error("Error fetching data:", error);
           showNotification("Failed to load data.", "error");
+          
+          // If auto-refresh is enabled, restart the timer even on error
+          if (isAutoRefreshEnabled) {
+            startAutoRefresh();
+          }
         } finally {
-          hideLoading();
+          // Always hide loading overlay
+          showLoading(false);
+          
+          // Hide refresh indicator and remove animation class
+          const indicator = document.getElementById("refreshIndicator");
+          if (indicator) {
+            indicator.classList.remove("show");
+          }
+          
+          // Remove data-updating class after animation completes
+          setTimeout(() => {
+            const tables = document.querySelectorAll('.table-modern');
+            tables.forEach(table => {
+              table.classList.remove('data-updating');
+            });
+          }, 500);
         }
       }
 
-      // --- BATCH MANAGEMENT FUNCTIONS ---
+      function updateLastRefreshTime() {
+        lastRefreshTime = new Date();
+        const timeElement = document.getElementById("lastRefreshTime");
+        if (timeElement) {
+          const timeString = lastRefreshTime.toLocaleTimeString();
+          timeElement.textContent = `Last refreshed: ${timeString}`;
+        }
+      }
+
+      // --- AUTO REFRESH FUNCTIONS ---
+      function startAutoRefresh() {
+        // Clear any existing timer
+        if (autoRefreshTimer) {
+          clearInterval(autoRefreshTimer);
+        }
+        
+        // Get the selected interval
+        const intervalSelect = document.getElementById("refreshInterval");
+        if (intervalSelect) {
+          autoRefreshInterval = parseInt(intervalSelect.value) * 1000; // Convert to milliseconds
+        }
+        
+        // Set up the new timer
+        autoRefreshTimer = setInterval(() => {
+          fetchData(false); // Don't show loading overlay for auto-refresh
+        }, autoRefreshInterval);
+        
+        // Update UI
+        isAutoRefreshEnabled = true;
+        updateRefreshUI();
+        startProgressBar();
+      }
+      
+      function stopAutoRefresh() {
+        // Clear the timer
+        if (autoRefreshTimer) {
+          clearInterval(autoRefreshTimer);
+          autoRefreshTimer = null;
+        }
+        
+        // Update UI
+        isAutoRefreshEnabled = false;
+        updateRefreshUI();
+        stopProgressBar();
+      }
+      
+      function toggleAutoRefresh() {
+        if (isAutoRefreshEnabled) {
+          stopAutoRefresh();
+        } else {
+          startAutoRefresh();
+        }
+      }
+      
+      function updateRefreshUI() {
+        const toggleBtn = document.getElementById("refreshToggle");
+        const statusIndicator = document.getElementById("refreshStatusIndicator");
+        const statusText = document.getElementById("refreshStatusText");
+        
+        if (isAutoRefreshEnabled) {
+          toggleBtn.classList.add("active");
+          toggleBtn.innerHTML = '<i class="bi bi-stop-circle"></i><span>Stop</span>';
+          statusIndicator.classList.add("active");
+          statusText.textContent = "Active";
+        } else {
+          toggleBtn.classList.remove("active");
+          toggleBtn.innerHTML = '<i class="bi bi-play-circle"></i><span>Start</span>';
+          statusIndicator.classList.remove("active");
+          statusText.textContent = "Disabled";
+        }
+      }
+      
+      function startProgressBar() {
+        const progressBar = document.getElementById("refreshProgressBar");
+        if (!progressBar) return;
+        
+        // Reset the progress bar
+        progressBar.style.width = "0%";
+        progressBar.classList.add("active");
+        
+        // Clear any existing progress timer
+        if (refreshProgressTimer) {
+          clearInterval(refreshProgressTimer);
+        }
+        
+        // Set up the progress animation
+        const duration = autoRefreshInterval; // in milliseconds
+        const updateInterval = 100; // Update every 100ms
+        const increment = (updateInterval / duration) * 100; // Percentage increment
+        
+        let width = 0;
+        refreshProgressTimer = setInterval(() => {
+          width += increment;
+          if (width >= 100) {
+            width = 100;
+            clearInterval(refreshProgressTimer);
+          }
+          progressBar.style.width = width + "%";
+        }, updateInterval);
+      }
+      
+      function stopProgressBar() {
+        const progressBar = document.getElementById("refreshProgressBar");
+        if (!progressBar) return;
+        
+        progressBar.classList.remove("active");
+        progressBar.style.width = "0%";
+        
+        // Clear the progress timer
+        if (refreshProgressTimer) {
+          clearInterval(refreshProgressTimer);
+          refreshProgressTimer = null;
+        }
+      }
+
       function updateBatchDropdown() {
         const dropdown = document.getElementById("summaryBatchSelect");
         dropdown.innerHTML = "";
@@ -1164,7 +1531,7 @@
         
         // Check if current year has batches, if not add default ones
         if (Object.keys(webinarData[currentWebinarYear]).length === 0) {
-          // Add some default batches so the chart isn't empty
+          // FIX: Add some default batches so the chart isn't empty
           const defaultBatches = ["Q1", "Q2", "Q3", "Q4"]; 
           defaultBatches.forEach(batch => {
             webinarData[currentWebinarYear][batch] = 0;
@@ -1192,14 +1559,14 @@
         }
         
         // Clear and rebuild the header with just numbers
-        dailyHead.innerHTML = `<th class="name-cell editable-header" contenteditable onblur="updateDailyHeader(0, this.innerText)">${customHeaders.daily[0]}</th>`;
+        dailyHead.innerHTML = `<th class="name-cell read-only-header">${customHeaders.daily[0]}</th>`;
         for (let d = 1; d <= days; d++) { 
           const headerText = customHeaders.daily[d] || `${d}`;
-          dailyHead.innerHTML += `<th class="editable-header" contenteditable onblur="updateDailyHeader(${d}, this.innerText)">${headerText}</th>`; 
+          dailyHead.innerHTML += `<th class="read-only-header">${headerText}</th>`; 
         }
-        dailyHead.innerHTML += `<th class="total-cell editable-header" contenteditable onblur="updateDailyHeader(${days + 1}, this.innerText)">${customHeaders.daily[days + 1] || "TOTAL"}</th>`;
+        dailyHead.innerHTML += `<th class="total-cell read-only-header">${customHeaders.daily[days + 1] || "TOTAL"}</th>`;
         
-        // Render body with editable cells for letters
+        // Render body with read-only cells
         dailyBody.innerHTML = "";
         salesData.employees.forEach((emp) => {
           if (!salesData.dailyBookings[emp]) salesData.dailyBookings[emp] = {};
@@ -1214,8 +1581,8 @@
             const numericValue = Number(val.toString().replace(/[^0-9]/g, '')) || 0;
             total += numericValue;
             
-            // Create cell that can accept letters
-            row += `<td class="editable-cell" contenteditable onblur="updateDaily('${emp}',${month},${d},this.innerText)">${val}</td>`;
+            // Create read-only cell
+            row += `<td class="read-only-cell">${val}</td>`;
           }
           
           row += `<td class="total-cell">${total}</td></tr>`; 
@@ -1263,11 +1630,11 @@
           badge.style.display = "inline-block";
         }
         
-        summaryHead.innerHTML = `<th class="name-cell editable-header" contenteditable onblur="updateSummaryHeader(0, this.innerText)">${customHeaders.summary[0]}</th>`;
+        summaryHead.innerHTML = `<th class="name-cell read-only-header">${customHeaders.summary[0]}</th>`;
         for (let i = 1; i < customHeaders.summary.length - 1; i++) { 
-          summaryHead.innerHTML += `<th class="editable-header" contenteditable onblur="updateSummaryHeader(${i}, this.innerText)">${customHeaders.summary[i]}</th>`; 
+          summaryHead.innerHTML += `<th class="read-only-header">${customHeaders.summary[i]}</th>`; 
         }
-        summaryHead.innerHTML += `<th class="total-cell editable-header" contenteditable onblur="updateSummaryHeader(${customHeaders.summary.length - 1}, this.innerText)">${customHeaders.summary[customHeaders.summary.length - 1]}</th>`;
+        summaryHead.innerHTML += `<th class="total-cell read-only-header">${customHeaders.summary[customHeaders.summary.length - 1]}</th>`;
         summaryBody.innerHTML = "";
         
         // Filter employees based on batch selection
@@ -1282,28 +1649,32 @@
             off: 0, 
             rep: 0, 
             app: 0, 
+            bas: 0,
+            adv: 0,
             att: 0 
           };
 
-          // Calculate total (sum of pre, off, rep, app)
-          const total = s.pre + s.off + s.rep + s.app;
+          // Calculate total (sum of pre, off, rep, app, bas, adv)
+          const total = s.pre + s.off + s.rep + s.app + s.bas + s.adv;
 
           // Calculate postponed: Total - Attended
           const postponed = Math.max(0, total - s.att);
 
           let row = `<tr><td class="name-cell">${emp}</td>`;
 
-          // FAMILY columns (pre, off, rep, app)
-          row += `<td class="editable-cell" contenteditable onblur="sUpdate('${emp}','pre',this.innerText)">${s.pre}</td>`;
-          row += `<td class="editable-cell" contenteditable onblur="sUpdate('${emp}','off',this.innerText)">${s.off}</td>`;
-          row += `<td class="editable-cell" contenteditable onblur="sUpdate('${emp}','rep',this.innerText)">${s.rep}</td>`;
-          row += `<td class="editable-cell" contenteditable onblur="sUpdate('${emp}','app',this.innerText)">${s.app}</td>`;
+          // FAMILY columns (pre, off, rep, app, bas, adv)
+          row += `<td class="read-only-cell">${s.pre}</td>`;
+          row += `<td class="read-only-cell">${s.off}</td>`;
+          row += `<td class="read-only-cell">${s.rep}</td>`;
+          row += `<td class="read-only-cell">${s.app}</td>`;
+          row += `<td class="read-only-cell">${s.bas}</td>`;
+          row += `<td class="read-only-cell">${s.adv}</td>`;
 
           // ✅ Total (after FAMILY)
           row += `<td class="total-cell">${total}</td>`;
 
           // ✅ Attended
-          row += `<td class="editable-cell" contenteditable onblur="sUpdate('${emp}','att',this.innerText)">${s.att}</td>`;
+          row += `<td class="read-only-cell">${s.att}</td>`;
 
           // ✅ Postponed
           row += `<td class="total-cell">${postponed}</td>`;
@@ -1319,8 +1690,8 @@
         let grandTotal = 0;
         let grandAttended = 0;
 
-        // FAMILY totals (pre, off, rep, app)
-        ["pre", "off", "rep", "app"].forEach((key) => {
+        // FAMILY totals (pre, off, rep, app, bas, adv)
+        ["pre", "off", "rep", "app", "bas", "adv"].forEach((key) => {
           let columnTotal = 0; 
 
           employeesToShow.forEach((emp) => { 
@@ -1379,7 +1750,15 @@
         // Calculate and update leads for all employees
         salesData.employees.forEach(emp => {
           // Get the summary data for the selected batch
-          const summary = salesData.leadSummary[emp][selectedBatchIndex] || { pre: 0, off: 0, rep: 0, app: 0, att: 0 };
+          const summary = salesData.leadSummary[emp][selectedBatchIndex] || { 
+            pre: 0, 
+            off: 0, 
+            rep: 0, 
+            app: 0, 
+            bas: 0,
+            adv: 0,
+            att: 0 
+          };
           
           // Calculate leads based on the rules
           let totalLeads = 0;
@@ -1400,6 +1779,16 @@
           // Family: 1 = 0 leads, 2 = 1 leads
           if (summary.app >= 2) {
             totalLeads += Math.floor(summary.app / 2) * 1; // 1 lead per 2 family members
+          }
+          
+          // Basic: 4 bookings = 1 lead
+          if (summary.bas >= 4) {
+            totalLeads += Math.floor(summary.bas / 4) * 1; // 1 lead per 4 basic bookings
+          }
+          
+          // Advance: 2 bookings = 1 lead
+          if (summary.adv >= 2) {
+            totalLeads += Math.floor(summary.adv / 2) * 1; // 1 lead per 2 advance bookings
           }
           
           // Initialize monthly leads data for the year if it doesn't exist
@@ -1442,11 +1831,11 @@
           customHeaders.monthly = [...customHeaders.monthly, ...months, "TOTAL"]; 
         }
         
-        monthlyHead.innerHTML = `<th class="name-cell editable-header" contenteditable onblur="updateMonthlyHeader(0, this.innerText)">${customHeaders.monthly[0]}</th>`;
+        monthlyHead.innerHTML = `<th class="name-cell read-only-header">${customHeaders.monthly[0]}</th>`;
         for (let i = 1; i < customHeaders.monthly.length - 1; i++) { 
-          monthlyHead.innerHTML += `<th class="editable-header" contenteditable onblur="updateMonthlyHeader(${i}, this.innerText)">${customHeaders.monthly[i]}</th>`; 
+          monthlyHead.innerHTML += `<th class="read-only-header">${customHeaders.monthly[i]}</th>`; 
         }
-        monthlyHead.innerHTML += `<th class="total-cell editable-header" contenteditable onblur="updateMonthlyHeader(${customHeaders.monthly.length - 1}, this.innerText)">${customHeaders.monthly[customHeaders.monthly.length - 1]}</th>`;
+        monthlyHead.innerHTML += `<th class="total-cell read-only-header">${customHeaders.monthly[customHeaders.monthly.length - 1]}</th>`;
         monthlyBody.innerHTML = "";
         
         // Get the monthly leads data for the current year
@@ -1462,8 +1851,8 @@
           empMonthlyLeads.forEach((v, i) => {
             total += Number(v || 0);
             const isCurrentMonth = i === currentMonthlyMonth;
-            const cellClass = isCurrentMonth ? "editable-cell current-month" : "editable-cell";
-            row += `<td class="${cellClass}" contenteditable onblur="updateMonthly('${emp}',${i},this.innerText)">${v}</td>`;
+            const cellClass = isCurrentMonth ? "read-only-cell current-month" : "read-only-cell";
+            row += `<td class="${cellClass}">${v}</td>`;
           });
           
           row += `<td class="total-cell">${total}</td></tr>`; 
@@ -1496,11 +1885,11 @@
           customHeaders.batch.push("TOTAL"); 
         }
         
-        batchHead.innerHTML = `<th class="name-cell editable-header" contenteditable onblur="updateBatchHeader(0, this.innerText)">${customHeaders.batch[0]}</th>`;
+        batchHead.innerHTML = `<th class="name-cell read-only-header">${customHeaders.batch[0]}</th>`;
         for (let i = 1; i < customHeaders.batch.length - 1; i++) { 
-          batchHead.innerHTML += `<th class="editable-header" contenteditable onblur="updateBatchHeader(${i}, this.innerText)">${customHeaders.batch[i]}</th>`; 
+          batchHead.innerHTML += `<th class="read-only-header">${customHeaders.batch[i]}</th>`; 
         }
-        batchHead.innerHTML += `<th class="total-cell editable-header" contenteditable onblur="updateBatchHeader(${customHeaders.batch.length - 1}, this.innerText)">${customHeaders.batch[customHeaders.batch.length - 1]}</th>`;
+        batchHead.innerHTML += `<th class="total-cell read-only-header">${customHeaders.batch[customHeaders.batch.length - 1]}</th>`;
         batchBody.innerHTML = "";
         
         salesData.employees.forEach((emp) => {
@@ -1510,7 +1899,7 @@
           batchData.batches.forEach((b) => {
             const val = batchData.batchLeads[emp][b.id] || 0; 
             total += Number(val || 0);
-            row += `<td class="editable-cell" contenteditable onblur="updateBatch('${emp}',${b.id},this.innerText)">${val}</td>`;
+            row += `<td class="read-only-cell">${val}</td>`;
           });
           
           row += `<td class="total-cell">${total}</td></tr>`; 
@@ -1537,7 +1926,7 @@
         batchData.batches.forEach((b) => {
           const thc = batchData.thc[b.id] || 0; 
           thcTotal += Number(thc || 0);
-          thcRow += `<td class="editable-cell" contenteditable onblur="updateTHC(${b.id},this.innerText)">${thc}</td>`;
+          thcRow += `<td class="read-only-cell">${thc}</td>`;
         });
         
         thcRow += `<td class="total-cell">${thcTotal}</td></tr>`; 
@@ -1549,131 +1938,6 @@
         renderSummary(); 
         renderMonthly(); 
         renderBatch(); 
-      }
-
-      // --- UPDATE FUNCTIONS ---
-      function updateDaily(emp, m, d, val) { 
-        // Store the text value directly (can be letters or numbers)
-        const textValue = val.trim();
-        
-        // Ensure the year and month data structures exist
-        if (!salesData.dailyBookingsByYear[currentDailyYear]) {
-          salesData.dailyBookingsByYear[currentDailyYear] = {};
-        }
-        if (!salesData.dailyBookingsByYear[currentDailyYear][emp]) {
-          salesData.dailyBookingsByYear[currentDailyYear][emp] = {};
-        }
-        if (!salesData.dailyBookingsByYear[currentDailyYear][emp][m]) {
-          salesData.dailyBookingsByYear[currentDailyYear][emp][m] = {};
-        }
-        
-        // Update the value as text
-        salesData.dailyBookingsByYear[currentDailyYear][emp][m][d] = textValue;
-        
-        // Also update the reference for immediate UI update
-        if (!salesData.dailyBookings[emp]) salesData.dailyBookings[emp] = {};
-        if (!salesData.dailyBookings[emp][m]) salesData.dailyBookings[emp][m] = {};
-        salesData.dailyBookings[emp][m][d] = textValue;
-        
-        renderDaily(); 
-      }
-      
-      // This function connects the 2nd and 3rd carousels in real-time for the currently selected batch.
-      function sUpdate(emp, k, v) {
-        const oldValue = salesData.leadSummary[emp][currentSummaryMonth][k];
-        const newValue = Number(v) || 0;
-        salesData.leadSummary[emp][currentSummaryMonth][k] = newValue;
-        
-        // Get the current batch mapping
-        const batchMapping = batchToMonthMapping.find(b => b.batchIndex === currentSummaryMonth);
-        
-        if (batchMapping) {
-          // Calculate the total leads for the corresponding month based on the new logic
-          calculateMonthlyLeads(emp, batchMapping.monthIndex, batchMapping.year);
-        }
-        
-        renderSummary();
-        renderMonthly();
-      }
-      
-      // New function to calculate monthly leads based on the specific rules
-      function calculateMonthlyLeads(emp, monthIndex, year) {
-        const summary = salesData.leadSummary[emp][currentSummaryMonth];
-        let totalLeads = 0;
-        
-        // Apply the specific calculation rules
-        // Fresher: 1 = 1 lead
-        if (summary.pre > 0) {
-          totalLeads += summary.pre * 1; // 1 lead per fresher
-        }
-        
-        // Offer: 1 = 0 leads, 2 = 1 lead
-        if (summary.off >= 2) {
-          totalLeads += Math.floor(summary.off / 2) * 1; // 1 lead per 2 offers
-        }
-        
-        // Repeater: 1 = 0 leads, 2 = 0 leads (no leads from repeaters)
-        // No calculation needed for repeater leads
-        
-        // Family: 1 = 0 leads, 2 = 1 leads
-        if (summary.app >= 2) {
-          totalLeads += Math.floor(summary.app / 2) * 1; // 1 lead per 2 family members
-        }
-        
-        // Initialize monthly leads data for the year if it doesn't exist
-        if (!salesData.monthlyLeadsByYear[year]) {
-          salesData.monthlyLeadsByYear[year] = {};
-          salesData.employees.forEach(e => {
-            salesData.monthlyLeadsByYear[year][e] = Array(12).fill(0);
-          });
-        }
-        
-        // Update the monthly leads for the employee
-        salesData.monthlyLeadsByYear[year][emp][monthIndex] = totalLeads;
-      }
-      
-      function updateMonthly(emp, monthIndex, val) { 
-        // Ensure the year data structure exists
-        if (!salesData.monthlyLeadsByYear[currentMonthlyYear]) {
-          salesData.monthlyLeadsByYear[currentMonthlyYear] = {};
-        }
-        if (!salesData.monthlyLeadsByYear[currentMonthlyYear][emp]) {
-          salesData.monthlyLeadsByYear[currentMonthlyYear][emp] = Array(12).fill(0);
-        }
-        
-        // Update the value in the year-specific data
-        salesData.monthlyLeadsByYear[currentMonthlyYear][emp][monthIndex] = Number(val) || 0;
-        
-        // Also update the reference for immediate UI update
-        salesData.monthlyLeads[emp][monthIndex] = Number(val) || 0;
-        
-        renderMonthly(); 
-      }
-      
-      function updateBatch(emp, id, v) { 
-        batchData.batchLeads[emp][id] = Number(v) || 0; 
-        renderBatch(); 
-      }
-      
-      function updateTHC(id, v) { 
-        batchData.thc[id] = Number(v) || 0; 
-        renderBatch(); 
-      }
-      
-      function updateDailyHeader(index, value) { 
-        customHeaders.daily[index] = value; 
-      }
-      
-      function updateSummaryHeader(index, value) { 
-        customHeaders.summary[index] = value; 
-      }
-      
-      function updateMonthlyHeader(index, value) { 
-        customHeaders.monthly[index] = value; 
-      }
-      
-      function updateBatchHeader(index, value) { 
-        customHeaders.batch[index] = value; 
       }
 
       // --- YEAR UPDATE FUNCTIONS ---
@@ -1919,22 +2183,6 @@
       }
 
       document.addEventListener("DOMContentLoaded", function () {
-        const carousel = document.getElementById("salesCarousel");
-        const indicators = document.querySelectorAll(".indicator-dot");
-
-        carousel.addEventListener("slide.bs.carousel", function (event) {
-          // Remove active from all
-          indicators.forEach(dot => dot.classList.remove("active"));
-
-          // Add active to current slide index
-          indicators[event.to].classList.add("active");
-        });
-        
-        // Initialize dashboard
-        initializeDashboard();
-      });
-      
-      function initializeDashboard() {
         // Initialize default values
         currentSummaryMonth = 0; // Default to first batch
         currentMonthlyMonth = new Date().getMonth();
@@ -1955,8 +2203,37 @@
         // Initialize default webinar batches
         initializeDefaultWebinarBatches();
         
-        fetchData();
-      }
+        // Fetch data and render (with loading overlay for initial load)
+        fetchData(true);
+        
+        // Set up auto refresh controls
+        const refreshToggle = document.getElementById("refreshToggle");
+        const refreshInterval = document.getElementById("refreshInterval");
+        
+        if (refreshToggle) {
+          refreshToggle.addEventListener("click", toggleAutoRefresh);
+        }
+        
+        if (refreshInterval) {
+          refreshInterval.addEventListener("change", () => {
+            if (isAutoRefreshEnabled) {
+              stopAutoRefresh();
+              startAutoRefresh();
+            }
+          });
+        }
+        
+        const carousel = document.getElementById("salesCarousel");
+        const indicators = document.querySelectorAll(".indicator-dot");
+
+        carousel.addEventListener("slide.bs.carousel", function (event) {
+          // Remove active from all
+          indicators.forEach(dot => dot.classList.remove("active"));
+
+          // Add active to current slide index
+          indicators[event.to].classList.add("active");
+        });
+      });
     </script>
   </body>
 </html>
